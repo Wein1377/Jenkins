@@ -1,17 +1,33 @@
 pipeline {
     agent any
-
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
     stages {
-        stage('Build') {
+        stage('Git Checkout') {
             steps {
-                git 'https://github.com/Wein1377/Jenkins.git'
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+               git 'https://github.com/Wein1377/Jenkins.git'
             }
-
-            post {
-                success {
-                    archiveArtifacts 'target/*.jar'
-                }
+        }
+         stage('Compile') {
+            steps {
+               sh "mvn compile"
+            }
+        }
+         stage('Test') {
+            steps {
+               sh "mvn test"
+            }
+        }
+        stage('Package') {
+            steps {
+               sh "mvn package"
+            }
+        }
+        stage('Install') {
+            steps {
+               sh "mvn install"
             }
         }
     }
