@@ -3,13 +3,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Wein1377/Jenkins.git'
+                git "https://github.com/Wein1377/Jenkins.git"
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh "mvn clean package"
             }
         }
 
