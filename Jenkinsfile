@@ -1,34 +1,43 @@
 pipeline {
     agent any
-    tools {
-        jdk 'jdk17'
-        maven 'maven3'
-    }
+
     stages {
-        stage('Git Checkout') {
+        stage('Checkout') {
             steps {
-               git 'https://github.com/Wein1377/Jenkins.git'
+                git 'https://github.com/Wein1377/Jenkins.git'
             }
         }
-         stage('Compile') {
+
+        stage('Build') {
             steps {
-               sh "mvn compile"
+                sh 'mvn clean package'
             }
         }
-         stage('Test') {
+
+        stage('Test') {
             steps {
-               sh "mvn test"
+                sh 'mvn test'
             }
         }
-        stage('Package') {
+
+        stage('Deploy') {
             steps {
-               sh "mvn package"
+                sh 'mvn deploy'
             }
         }
-        stage('Install') {
-            steps {
-               sh "mvn install"
-            }
+    }
+
+    post {
+        always {
+            archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
+        }
+
+        success {
+            echo 'Сборка прошла успешно! Можете развернуть приложение.'
+        }
+
+        failure {
+            echo 'Сборка не удалась. Проверьте логи и исправьте ошибки.'
         }
     }
 }
